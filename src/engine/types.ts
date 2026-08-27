@@ -133,6 +133,7 @@ export interface HUDState {
   fuel: number
   supercruise: boolean
   scLabel: string
+  wellFactor: number
   jumpPhase: HyperspaceLike['phase']
   jumpProgress: number
   nearestName: string

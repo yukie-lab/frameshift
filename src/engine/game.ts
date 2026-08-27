@@ -199,6 +199,7 @@ export class Game {
       fuel: this.fuel,
       supercruise: !!this.sc?.active,
       scLabel: this.sc && this.sc.active ? this.sc.speedLabel() : '',
+      wellFactor: this.sc && this.sc.active ? this.sc.wellFactor() : 0,
       jumpPhase: this.fx ? this.fx.phase : 'idle',
       jumpProgress: this.fx ? this.fx.progress : 0,
       nearestName,

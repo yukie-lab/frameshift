@@ -164,6 +164,21 @@ chromatic aberration, swirl, and a hot core added after the shear modulation.
 
 **Post.** `UnrealBloomPass` now runs at half resolution (strength .62, radius .62, threshold 1.02).
 
+## Frozen-type change
+
+`HUDState` (in the frozen `src/engine/types.ts`) gained one field:
+
+```ts
+wellFactor: number   // 0..1 supercruise gravity-well depth, 0 when not in supercruise
+```
+
+The v1 contract specified a gravity-well bar in the supercruise HUD cluster, but nothing carried
+the value to the HUD: `SupercruiseController.wellFactor()` was computed every frame and never read.
+`Game.buildHUDState()` now forwards it and `HUD.drawGravWell()` renders it as a labelled bar below
+the speed panel — CLEAR / FIELD / BRAKING, with a threshold tick at the 0.82 braking point. Measured
+against the well model (`depth = clamp((8 - dist/radius)/6.5, 0, 1)`): 30 radii → 0.00 uncapped,
+5 radii → 0.46 capped to 73 km/s, 2 radii → 0.92 capped to 30 km/s.
+
 ## Bug fixes
 - **Supercruise streaks (`fx/supercruise.ts`).** Anchors were stored as *absolute* world positions
   in a `Float32Array`. At ~1e11 m the float32 quantum is ~8 km, so `anchor - shipPos` collapsed to

@@ -86,6 +86,7 @@ export class HUD {
     this.drawNav(c, cx, cy, state)
     this.drawBars(c, cx, cy, state)
     this.drawRadar(c, cx, cy, state, dt)
+    this.drawGravWell(c, cx, cy, state)
     this.drawJump(c, cx, cy, state)
     this.drawSCExtras(c, cx, cy, state)
 
@@ -227,6 +228,52 @@ export class HUD {
       c.fillText('BOOST', x + 110, y + 178)
       c.globalAlpha = 1
     }
+  }
+
+  private drawGravWell(c: CanvasRenderingContext2D, cx: number, cy: number, s: HUDState): void {
+    if (!s.supercruise) return
+    const w = THREE.MathUtils.clamp(s.wellFactor, 0, 1)
+    const x = cx - 560
+    const y = cy + 122
+    this.panel(c, x, y, 310, 62)
+
+    const deep = w > .82
+    const tint = w < .30 ? CYAN : w < .82 ? ORANGE : RED
+    c.textAlign = 'left'
+    c.font = `500 17px ${SANS}`
+    c.fillStyle = DIM
+    c.fillText('GRAV WELL', x + 16, y + 26)
+
+    c.textAlign = 'right'
+    c.font = `600 16px ${MONO}`
+    c.fillStyle = tint
+    if (deep) c.globalAlpha = .55 + .45 * Math.sin(performance.now() / 130)
+    c.fillText(w < .04 ? 'CLEAR' : deep ? 'BRAKING' : 'FIELD', x + 294, y + 26)
+    c.globalAlpha = 1
+
+    const bx = x + 16
+    const by = y + 36
+    const bw = 278
+    c.strokeStyle = DIM
+    c.lineWidth = 1
+    c.strokeRect(bx, by, bw, 14)
+    if (w > .002) {
+      c.fillStyle = tint
+      c.fillRect(bx + 2, by + 2, Math.max(2, (bw - 4) * w), 10)
+    }
+    c.strokeStyle = 'rgba(255,190,120,.35)'
+    for (const t of [.25, .5, .75]) {
+      c.beginPath()
+      c.moveTo(bx + bw * t, by)
+      c.lineTo(bx + bw * t, by + 14)
+      c.stroke()
+    }
+    c.strokeStyle = '#ffffff66'
+    c.beginPath()
+    c.moveTo(bx + bw * .82, by - 3)
+    c.lineTo(bx + bw * .82, by + 17)
+    c.stroke()
+    c.textAlign = 'left'
   }
 
   private drawHeading(c: CanvasRenderingContext2D, cx: number, s: HUDState): void {
