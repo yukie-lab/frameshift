@@ -12,7 +12,8 @@
     "perf": "node scripts/perf.mjs",
     "jumptest": "node scripts/jumptest.mjs",
     "deploy": "bash scripts/deploy.sh",
-    "pagescheck": "node scripts/pagescheck.mjs"
+    "pagescheck": "node scripts/pagescheck.mjs",
+    "axischeck": "node scripts/axischeck.mjs"
   },
   "dependencies": {
     "three": "^0.180.0"

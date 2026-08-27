@@ -1,6 +1,10 @@
 import * as THREE from 'three'
 
 export interface InputState {
+  // Commanded direction from the pilot's seat, not a rotation sign:
+  // pitch +1 = nose up, yaw +1 = nose right, roll +1 = bank right.
+  // Right-handed Y-up with forward -Z means yaw and roll are negated when
+  // they become angular velocity about the local +Y / +Z axes.
   pitch: number
   yaw: number
   roll: number

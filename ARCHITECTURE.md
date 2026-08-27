@@ -184,6 +184,14 @@ against the well model (`depth = clamp((8 - dist/radius)/6.5, 0, 1)`): 30 radii 
   in a `Float32Array`. At ~1e11 m the float32 quantum is ~8 km, so `anchor - shipPos` collapsed to
   zero and every streak rendered on top of the camera. The field is now maintained in a
   ship-relative frame and advanced by a log-compressed virtual flow speed.
+- **Inverted yaw and roll (`physics/flightModel.ts`, `fx/supercruise.ts`).** `A` turned the nose
+  right and `D` turned it left; `Q` banked right and `E` banked left — inverted against both the
+  manual and the usual convention. A pilot command was written straight into the local angular
+  velocity, but in a right-handed Y-up frame with forward `-Z`, turning right is a *negative*
+  rotation about local `+Y` and banking right is negative about `+Z`. Both are now negated at that
+  conversion, so `InputState` keeps seat-relative semantics (`yaw +1` = nose right). Pitch was
+  already correct: `W` = nose down is the intended flight-sim convention. `npm run axischeck`
+  asserts all ten controls against the documented direction.
 - **`main.ts` universe accessor** no longer allocates an array of body wrappers every frame.
 - **`generator.dispose()`** now disposes textures and baked cube render targets. Verified stable
   over 5 consecutive hyperspace jumps (`npm run jumptest`): geometry and texture counts flat.
@@ -195,6 +203,7 @@ against the well model (`depth = clamp((8 - dist/radius)/6.5, 0, 1)`): 30 radii 
 | `npm run survey` | 11 framings (star close/far, gas giant ± rings, each planet type, deep sky, galactic core, belt) → `shots/survey/*.png`. Env: `SEED`, `NOCOCKPIT=1`, `OUT`. |
 | `npm run perf` | FPS + draw-call counts per scene. Accepts `a,b,c` scene list; `scene|flag=1` appends a URL flag. |
 | `npm run jumptest` | 5 consecutive hyperspace jumps; reports console errors and GPU resource counts. |
+| `npm run axischeck` | Drives every control key and asserts the ship moves the documented way. |
 
 The four above require `npm run dev` to be running.
 

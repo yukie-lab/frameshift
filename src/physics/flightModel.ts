@@ -71,8 +71,8 @@ export class FlightModel implements FlightModelLike {
     if (this.faOn || hasRotInput) {
       const k = 1 - Math.exp(-ROT_SMOOTH_K * dt)
       this.angVel.x += (input.pitch * PITCH_RATE - this.angVel.x) * k
-      this.angVel.y += (input.yaw * YAW_RATE - this.angVel.y) * k
-      this.angVel.z += (input.roll * ROLL_RATE - this.angVel.z) * k
+      this.angVel.y += (-input.yaw * YAW_RATE - this.angVel.y) * k
+      this.angVel.z += (-input.roll * ROLL_RATE - this.angVel.z) * k
     }
 
     const wLen = this.angVel.length()

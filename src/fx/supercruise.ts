@@ -86,8 +86,8 @@ export class SupercruiseController implements SupercruiseLike {
   update(dt: number, ship: FlightModelLike, input: InputState): void {
     const rr = this.rotRates
     rr.x += ((input.pitch*PITCH_RATE) - rr.x) * Math.min(1, dt*ROT_K)
-    rr.y += ((input.yaw*YAW_RATE) - rr.y) * Math.min(1, dt*ROT_K)
-    rr.z += ((input.roll*ROLL_RATE) - rr.z) * Math.min(1, dt*ROT_K)
+    rr.y += ((-input.yaw*YAW_RATE) - rr.y) * Math.min(1, dt*ROT_K)
+    rr.z += ((-input.roll*ROLL_RATE) - rr.z) * Math.min(1, dt*ROT_K)
     _v1.set(rr.x, rr.y, rr.z)
     if (_v1.lengthSq() > 0) {
       _q1.setFromAxisAngle(_v1.clone().normalize(), _v1.length()*dt)
