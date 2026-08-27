@@ -10,7 +10,9 @@
     "shot": "node scripts/screenshot.mjs",
     "survey": "node scripts/survey.mjs",
     "perf": "node scripts/perf.mjs",
-    "jumptest": "node scripts/jumptest.mjs"
+    "jumptest": "node scripts/jumptest.mjs",
+    "deploy": "bash scripts/deploy.sh",
+    "pagescheck": "node scripts/pagescheck.mjs"
   },
   "dependencies": {
     "three": "^0.180.0"

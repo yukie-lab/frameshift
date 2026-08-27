@@ -113,7 +113,24 @@ npm run jumptest                   # ハイパースペースジャンプを5連
 重い場合は `?nocomposer=1`（ポストエフェクト無効）で切り分けてください。
 ブルームは半解像度で動作します（`src/engine/renderer.ts`）。
 
-## 6. トラブルシューティング
+## 6. GitHub Pages への公開
+
+公開先: **https://yukie-lab.github.io/frameshift/**
+
+```bash
+npm run deploy       # ビルド → dist/ を gh-pages ブランチへ push（Pages はここを配信）
+npm run pagescheck   # dist/ を /frameshift/ 配下で静的配信して起動を検証
+URL=https://yukie-lab.github.io/frameshift/ node scripts/pagescheck.mjs   # 本番URLを検証
+```
+
+`main` ブランチのルートを直接配信すると `index.html` が `/src/main.ts`（生の TypeScript）を
+読みに行き、ブラウザが実行できずブート画面のまま止まります。**必ず Vite の本番ビルド
+（`dist/`）を配信してください。**
+
+`vite.config.ts` の `base` は build 時のみ `/frameshift/` になります（dev サーバーは `/` のまま
+なので QA スクリプトはそのまま動きます）。リポジトリ名を変えた場合はここも合わせて変更が必要です。
+
+## 7. トラブルシューティング
 
 | 症状 | 対処 |
 |---|---|
@@ -123,8 +140,9 @@ npm run jumptest                   # ハイパースペースジャンプを5連
 | Chrome が見つからない | `CHROME_PATH` 環境変数で実行ファイルを指定 |
 | 起動時に一瞬止まる | 銀河をキューブマップへ1回だけ焼き込んでいます（約 0.1〜0.2 秒）。ジャンプ到着時も同様 |
 | フレームレートが低い | `npm run perf` で計測。`?nosky=1` / `?nocockpit=1` で原因を切り分け |
+| ブート画面から進まない | 20秒後に原因がブート画面へ赤字で表示されます。静的配信なら `dist/` を配信しているか、`base` が URL と一致しているかを確認 |
 
-## 7. コード構造（詳細は ARCHITECTURE.md）
+## 8. コード構造（詳細は ARCHITECTURE.md）
 
 ```
 src/

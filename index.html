@@ -13,12 +13,41 @@
     #boot .bar { width: 280px; height: 2px; background: #141414; overflow: hidden; border-radius: 1px; }
     #boot .bar i { display: block; height: 100%; width: 40%; background: linear-gradient(90deg, #ff8c2a, #35d6ff); animation: slide 1.1s ease-in-out infinite; }
     #boot small { color: #35d6ff; letter-spacing: .3em; opacity: .6; font-size: 10px; }
+    #boot pre { display: none; max-width: 80ch; margin: 0; padding: 14px 18px; border: 1px solid #ff3b30;
+      color: #ff3b30; letter-spacing: 0; font-size: 12px; line-height: 1.5; white-space: pre-wrap; text-align: left; }
+    #boot.failed .bar { display: none; }
+    #boot.failed pre { display: block; }
     @keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
   </style>
 </head>
 <body>
   <div id="app"></div>
-  <div id="boot"><h1>FRAMESHIFT</h1><div class="bar"><i></i></div><small>INITIALIZING FRAME SHIFT DRIVE</small></div>
+  <div id="boot"><h1>FRAMESHIFT</h1><div class="bar"><i></i></div><small>INITIALIZING FRAME SHIFT DRIVE</small><pre id="bootErr"></pre></div>
+  <script>
+    (function () {
+      var boot = document.getElementById('boot')
+      var out = document.getElementById('bootErr')
+      var shown = false
+      function fail(what) {
+        if (shown || !boot || !out) return
+        shown = true
+        boot.classList.add('failed')
+        boot.querySelector('small').textContent = 'FRAME SHIFT DRIVE FAILURE'
+        out.textContent = what
+      }
+      window.addEventListener('error', function (e) {
+        fail(e.message + (e.filename ? '\n' + e.filename + ':' + e.lineno : ''))
+      })
+      window.addEventListener('unhandledrejection', function (e) {
+        fail(String(e.reason && e.reason.stack || e.reason))
+      })
+      setTimeout(function () {
+        if (!document.querySelector('#app canvas')) {
+          fail('Renderer did not start within 20s.\n\nIf this page is served statically, it must be the Vite\nproduction build (npm run build -> dist/), not the repo\nroot: browsers cannot execute src/main.ts directly.\n\nIf WebGL2 is unavailable or disabled, that will also\nstop startup.')
+        }
+      }, 20000)
+    })()
+  </script>
   <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

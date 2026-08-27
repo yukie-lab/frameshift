@@ -181,4 +181,21 @@ chromatic aberration, swirl, and a hot core added after the shear modulation.
 | `npm run perf` | FPS + draw-call counts per scene. Accepts `a,b,c` scene list; `scene|flag=1` appends a URL flag. |
 | `npm run jumptest` | 5 consecutive hyperspace jumps; reports console errors and GPU resource counts. |
 
-All four require `npm run dev` to be running.
+The four above require `npm run dev` to be running.
+
+| Command | What it does |
+|---|---|
+| `npm run build` | `tsc --noEmit` + vite build → `dist/` (`base` is `/frameshift/` for builds only) |
+| `npm run pagescheck` | Serves `dist/` under `/frameshift/` from its own static server and asserts the renderer starts with no console errors. `URL=…` checks a deployed site instead. |
+| `npm run deploy` | Build, then publish `dist/` to the `gh-pages` branch that GitHub Pages serves |
+
+## Deployment
+
+GitHub Pages serves the **`gh-pages` branch root**, not `main`. Serving `main` directly fails:
+`index.html` references `/src/main.ts`, which browsers cannot execute, so the boot overlay never
+clears. `index.html` now surfaces startup failures (uncaught errors, unhandled rejections, or no
+canvas after 20s) as red text on the boot screen instead of hanging silently.
+
+A `.github/workflows/pages.yml` that builds and deploys on every push to `main` is prepared but not
+committed: pushing it needs a token with the `workflow` scope (`gh auth refresh -s workflow`).
+Until then, `npm run deploy` is the publish path.
