@@ -1,0 +1,15 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+
+# QA artefacts — regenerate with `npm run survey` / `npm run jumptest`
+shots/survey/
+shots/jumptest/
+
+# local tooling
+.claude/settings.local.json
+
+# macOS
+.DS_Store

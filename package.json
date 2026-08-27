@@ -1,0 +1,27 @@
+{
+  "name": "frameshift",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "shot": "node scripts/screenshot.mjs",
+    "survey": "node scripts/survey.mjs",
+    "perf": "node scripts/perf.mjs",
+    "jumptest": "node scripts/jumptest.mjs"
+  },
+  "dependencies": {
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.180.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "puppeteer-core": "^24.10.0"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
+  }
+}
