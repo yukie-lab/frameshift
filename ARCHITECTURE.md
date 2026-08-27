@@ -192,6 +192,19 @@ against the well model (`depth = clamp((8 - dist/radius)/6.5, 0, 1)`): 30 radii 
   conversion, so `InputState` keeps seat-relative semantics (`yaw +1` = nose right). Pitch was
   already correct: `W` = nose down is the intended flight-sim convention. `npm run axischeck`
   asserts all ten controls against the documented direction.
+- **Supercruise effect never torn down (`fx/supercruise.ts`).** The host only calls `sc.update()`
+  while supercruise is engaged, so disengaging froze the star-streak `LineSegments` at
+  `visible = true, opacity = .4` permanently — the streaks hung in space for the rest of the
+  session. `active` is now an accessor that tears the effect down on the transition to false
+  (streaks hidden, speed/FOV multiplier/well reset), so it does not depend on another update tick
+  that will never arrive.
+- **Heat and boost frozen during supercruise (`engine/game.ts`, `physics/flightModel.ts`).** Same
+  root cause from the other side: `Game` called *either* `ship.update()` *or* `sc.update()`, so
+  entering supercruise mid-boost pinned `heat` and left `boosting` true for the whole cruise — the
+  HUD showed a stuck HEAT bar and a permanently flashing BOOST lamp. `Game` now always ticks the
+  flight model, and its supercruise branch clears the boost and keeps cooling before returning.
+  This extends the contract's "return immediately" rule: the supercruise controller still owns
+  position and attitude, the flight model still owns the thermal state.
 - **`main.ts` universe accessor** no longer allocates an array of body wrappers every frame.
 - **`generator.dispose()`** now disposes textures and baked cube render targets. Verified stable
   over 5 consecutive hyperspace jumps (`npm run jumptest`): geometry and texture counts flat.

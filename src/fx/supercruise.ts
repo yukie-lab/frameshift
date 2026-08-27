@@ -33,7 +33,16 @@ const _q1 = new THREE.Quaternion()
 const _fwd = new THREE.Vector3()
 
 export class SupercruiseController implements SupercruiseLike {
-  active = false
+  // The host only calls update() while supercruise is engaged, so disengaging
+  // has to tear the effect down here — nothing else will run again.
+  private engaged = false
+  get active(): boolean { return this.engaged }
+  set active(on: boolean) {
+    if (on === this.engaged) return
+    this.engaged = on
+    if (!on) this.disengage()
+  }
+
   private acc: () => UniverseAccessor
   private speed = MIN_SPEED
   private rotRates = new THREE.Vector3()
@@ -76,6 +85,15 @@ export class SupercruiseController implements SupercruiseLike {
     this.anchors[i*3]   = _v2.x
     this.anchors[i*3+1] = _v2.y
     this.anchors[i*3+2] = _v2.z
+  }
+
+  private disengage(): void {
+    this.streaks.visible = false
+    ;(this.streaks.material as THREE.LineBasicMaterial).opacity = 0
+    this.speed = MIN_SPEED
+    this.fovMul = 1
+    this.well = 0
+    this.lastActive = false
   }
 
   private speedForThrottle(t: number): number {

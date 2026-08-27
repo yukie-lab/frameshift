@@ -78,6 +78,7 @@ export class Game {
 
     if (this.ship) {
       if (this.sc && this.sc.active) {
+        this.ship.update(dt, inp)
         this.sc.update(dt, this.ship, inp)
         this.fuel = Math.max(0, this.fuel - dt * 0.0004)
       } else {

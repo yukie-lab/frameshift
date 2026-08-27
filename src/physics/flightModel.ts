@@ -52,6 +52,9 @@ export class FlightModel implements FlightModelLike {
 
     if (this.supercruise) {
       this.prevBoost = input.boost
+      this.boostTimer = 0
+      this.boosting = false
+      this.heat = Math.max(0, this.heat - HEAT_COOL_RATE * dt)
       return
     }
 
